@@ -75,6 +75,28 @@ public class LibraryTests
     }
 
     [TestMethod]
+    public void BuiltInSortKeepsTiesInTheirOrder()
+    {
+        List<Song> takes = new List<Song>();
+        for (int take = 1; take <= 10; take++)
+        {
+            for (int artist = 19; artist >= 0; artist--)
+            {
+                takes.Add(new Song($"Artist {artist:D2}", "Live at the Depot", 1, $"Take {take}"));
+            }
+        }
+        List<Song> expected = new List<Song>();
+        for (int artist = 0; artist <= 19; artist++)
+        {
+            for (int take = 1; take <= 10; take++)
+            {
+                expected.Add(new Song($"Artist {artist:D2}", "Live at the Depot", 1, $"Take {take}"));
+            }
+        }
+        CollectionAssert.AreEqual(expected, Library.BuiltInSort(takes), "Not yet: each artist's ten takes tie on artist, album and track, so a stable sort keeps them in the order they were given, Take 1 to Take 10.");
+    }
+
+    [TestMethod]
     public void BothSortsAgreeOnAThousandSongs()
     {
         List<Song> byMergeSort = Library.MergeSort(BigLibrary());

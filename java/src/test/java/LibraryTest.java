@@ -66,6 +66,23 @@ class LibraryTest {
     }
 
     @Test
+    void builtInSortKeepsTiesInTheirOrder() {
+        List<Song> takes = new ArrayList<>();
+        for (int take = 1; take <= 10; take++) {
+            for (int artist = 19; artist >= 0; artist--) {
+                takes.add(new Song("Artist %02d".formatted(artist), "Live at the Depot", 1, "Take " + take));
+            }
+        }
+        List<Song> expected = new ArrayList<>();
+        for (int artist = 0; artist <= 19; artist++) {
+            for (int take = 1; take <= 10; take++) {
+                expected.add(new Song("Artist %02d".formatted(artist), "Live at the Depot", 1, "Take " + take));
+            }
+        }
+        assertEquals(expected, Library.builtInSort(takes), "Not yet: each artist's ten takes tie on artist, album and track, so a stable sort keeps them in the order they were given, Take 1 to Take 10.");
+    }
+
+    @Test
     void bothSortsAgreeOnAThousandSongs() {
         List<Song> byMergeSort = Library.mergeSort(bigLibrary());
         assertEquals(1000, byMergeSort.size(), "Not yet: all 1,000 songs should be in the sorted list.");

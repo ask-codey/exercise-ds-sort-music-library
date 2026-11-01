@@ -38,7 +38,9 @@ public static class Library
 
     /*
      * The same order as MergeSort, with your language's built-in
-     * sort and CompareSongs. Give back a new list; leave the one you were
+     * sort and CompareSongs, ties included: songs that tie stay in the
+     * order they were given. List<T>.Sort doesn't promise that, and
+     * LINQ's OrderBy does. Give back a new list; leave the one you were
      * given as it was.
      *
      * Growth rate: (write it here)

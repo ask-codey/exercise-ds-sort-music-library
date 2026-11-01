@@ -54,6 +54,23 @@ test("built-in sort lists the library in order", () => {
   assert.deepEqual(library, SAMPLE, "Not yet: give back a new list, and leave the library in its own order.");
 });
 
+test("built-in sort keeps ties in their order", () => {
+  const takes = [];
+  for (let take = 1; take <= 10; take++) {
+    for (let artist = 19; artist >= 0; artist--) {
+      takes.push({ artist: `Artist ${String(artist).padStart(2, "0")}`, album: "Live at the Depot", track: 1, title: `Take ${take}` });
+    }
+  }
+  const expected = [];
+  for (let artist = 0; artist <= 19; artist++) {
+    for (let take = 1; take <= 10; take++) {
+      expected.push({ artist: `Artist ${String(artist).padStart(2, "0")}`, album: "Live at the Depot", track: 1, title: `Take ${take}` });
+    }
+  }
+  assert.deepEqual(builtInSort(takes), expected,
+    "Not yet: each artist's ten takes tie on artist, album and track, so a stable sort keeps them in the order they were given, Take 1 to Take 10.");
+});
+
 test("both sorts agree on a thousand songs", () => {
   const byMergeSort = mergeSort(bigLibrary());
   assert.equal(byMergeSort.length, 1000, "Not yet: all 1,000 songs should be in the sorted list.");

@@ -52,6 +52,12 @@ def test_built_in_sort_lists_the_library_in_order():
     assert library == SAMPLE, "Not yet: give back a new list, and leave the library in its own order."
 
 
+def test_built_in_sort_keeps_ties_in_their_order():
+    takes = [Song(f"Artist {artist:02d}", "Live at the Depot", 1, f"Take {take}") for take in range(1, 11) for artist in range(19, -1, -1)]
+    expected = [Song(f"Artist {artist:02d}", "Live at the Depot", 1, f"Take {take}") for artist in range(20) for take in range(1, 11)]
+    assert built_in_sort(takes) == expected,         "Not yet: each artist's ten takes tie on artist, album and track, so a stable sort keeps them in the order they were given, Take 1 to Take 10."
+
+
 def test_both_sorts_agree_on_a_thousand_songs():
     by_merge_sort = merge_sort(big_library())
     assert len(by_merge_sort) == 1000, "Not yet: all 1,000 songs should be in the sorted list."

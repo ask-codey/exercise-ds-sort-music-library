@@ -6,7 +6,7 @@ A music app lists its library by artist, then by album, then by track number. Yo
 
 - `compareSongs` (`CompareSongs` in C#, `compare_songs` in Python): which of two songs comes first, by artist, then album, then track
 - `mergeSort` (`MergeSort`, `merge_sort`): the library sorted with your own merge sort and `compareSongs`
-- `builtInSort` (`BuiltInSort`, `built_in_sort`): the same order, with your language's built-in sort and `compareSongs`
+- `builtInSort` (`BuiltInSort`, `built_in_sort`): the same order, ties included, with your language's built-in sort and `compareSongs`
 
 ## Pick your language
 
@@ -80,7 +80,7 @@ At first every test fails: that is expected. Each function you finish turns its 
 
 - **Start with `compareSongs`.** Compare the artists; only when they're the same, compare the albums; only when those are the same too, compare the track numbers. Names compare letter by letter, capitals first: `string.CompareOrdinal` in C#, `compareTo` in Java, `<` in Python, JavaScript and TypeScript.
 - **`mergeSort` is the lesson's merge sort** with `compareSongs(left, right) <= 0` where the lesson had `left <= right`. Taking from the left half on a tie (`<=`, not `<`) is what keeps it stable.
-- **The built-in sort takes your comparison:** `List<T>.Sort(CompareSongs)` in C#, `list.sort(Library::compareSongs)` in Java, `[...songs].sort(compareSongs)` in JavaScript and TypeScript. Python's `sorted` wants a key, so wrap it: `sorted(songs, key=cmp_to_key(compare_songs))`.
+- **The built-in sort takes your comparison:** `songs.OrderBy(song => song, Comparer<Song>.Create(CompareSongs)).ToList()` in C# (not `List<T>.Sort`, which can shuffle ties), `list.sort(Library::compareSongs)` in Java, `[...songs].sort(compareSongs)` in JavaScript and TypeScript. Python's `sorted` wants a key, so wrap it: `sorted(songs, key=cmp_to_key(compare_songs))`.
 - **Give back new lists.** The tests check that the library keeps its own order.
 
 ## Hand it in
