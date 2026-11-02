@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using MusicLibrary;
 
 namespace MusicLibrary.Tests;
@@ -104,5 +105,28 @@ public class LibraryTests
         Assert.AreEqual("Song 0", byMergeSort[0].Title, "Not yet: Artist 0's Album 0, track 1, is Song 0, and it comes first.");
         Assert.AreEqual("Song 999", byMergeSort[999].Title, "Not yet: Artist 9's Album 4, track 20, is Song 999, and it comes last.");
         CollectionAssert.AreEqual(byMergeSort, Library.BuiltInSort(BigLibrary()), "Not yet: your merge sort and the built-in sort should give the same order.");
+    }
+
+    [TestMethod]
+    public void FiftyThousandSongsSortInUnderTwoSeconds()
+    {
+        List<Song> library = new List<Song>();
+        for (int i = 0; i < 50000; i++)
+        {
+            int k = (int)((long)i * 7919 % 50000);
+            library.Add(new Song("Artist " + (k / 1000).ToString("D3"), "Album " + (k / 20 % 50).ToString("D2"), k % 20 + 1, "Song " + k));
+        }
+        Stopwatch watch = Stopwatch.StartNew();
+        List<Song> sorted = Library.MergeSort(library);
+        watch.Stop();
+        Assert.AreEqual(50000, sorted.Count, "Not yet: all 50,000 songs should be in the sorted list.");
+        Assert.IsTrue(watch.Elapsed.TotalSeconds < 2, "Not yet: sorting 50,000 songs took " + watch.Elapsed.TotalSeconds.ToString("0.0") + " seconds, and the ticket allows 2. A sort that splits and merges makes about 800,000 comparisons here; one that compares song by song makes hundreds of millions.");
+        for (int position = 0; position < sorted.Count; position++)
+        {
+            if (sorted[position].Title != "Song " + position)
+            {
+                Assert.Fail("Not yet: position " + position + " should be Song " + position + ": Artist, then album, then track.");
+            }
+        }
     }
 }

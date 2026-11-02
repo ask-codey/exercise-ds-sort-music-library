@@ -1,5 +1,7 @@
 # The tests for your three functions. You don't need to change this file.
 # Each message says what was expected, so a failing test tells you what to look at.
+import time
+
 from music_library import Song, built_in_sort, compare_songs, merge_sort
 
 SAMPLE = [Song("Night Bus Trio", "City Lights", 2, "Blue Hour"), Song("Marigold Avenue", "Sunday Static", 1, "Amber Road"), Song("Night Bus Trio", "City Lights", 1, "Desert Lights"), Song("Copper Kettle Band", "Kettle Songs", 3, "Falling Up"), Song("Marigold Avenue", "Lantern Season", 2, "Lemon Skies"), Song("Copper Kettle Band", "Kettle Songs", 1, "Echo Park"), Song("Marigold Avenue", "Sunday Static", 2, "Copper Moon"), Song("Night Bus Trio", "Afterglow", 4, "Velvet Train")]
@@ -64,3 +66,15 @@ def test_both_sorts_agree_on_a_thousand_songs():
     assert by_merge_sort[0].title == "Song 0", "Not yet: Artist 0's Album 0, track 1, is Song 0, and it comes first."
     assert by_merge_sort[999].title == "Song 999", "Not yet: Artist 9's Album 4, track 20, is Song 999, and it comes last."
     assert built_in_sort(big_library()) == by_merge_sort, "Not yet: your merge sort and the built-in sort should give the same order."
+
+
+def test_fifty_thousand_songs_sort_in_under_two_seconds():
+    keys = [i * 7919 % 50000 for i in range(50000)]
+    library = [Song(f"Artist {k // 1000:03d}", f"Album {k // 20 % 50:02d}", k % 20 + 1, f"Song {k}") for k in keys]
+    started = time.perf_counter()
+    result = merge_sort(library)
+    seconds = time.perf_counter() - started
+    assert len(result) == 50000, "Not yet: all 50,000 songs should be in the sorted list."
+    assert seconds < 2, f"Not yet: sorting 50,000 songs took {seconds:.1f} seconds, and the ticket allows 2. A sort that splits and merges makes about 800,000 comparisons here; one that compares song by song makes hundreds of millions."
+    for position, song in enumerate(result):
+        assert song.title == f"Song {position}", f"Not yet: position {position} should be Song {position}: Artist, then album, then track."

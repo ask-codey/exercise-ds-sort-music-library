@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,5 +90,24 @@ class LibraryTest {
         assertEquals("Song 0", byMergeSort.get(0).title(), "Not yet: Artist 0's Album 0, track 1, is Song 0, and it comes first.");
         assertEquals("Song 999", byMergeSort.get(999).title(), "Not yet: Artist 9's Album 4, track 20, is Song 999, and it comes last.");
         assertEquals(byMergeSort, Library.builtInSort(bigLibrary()), "Not yet: your merge sort and the built-in sort should give the same order.");
+    }
+
+    @Test
+    void fiftyThousandSongsSortInUnderTwoSeconds() {
+        List<Song> library = new ArrayList<>();
+        for (int i = 0; i < 50000; i++) {
+            int k = (int) ((long) i * 7919 % 50000);
+            library.add(new Song(String.format("Artist %03d", k / 1000), String.format("Album %02d", k / 20 % 50), k % 20 + 1, "Song " + k));
+        }
+        long started = System.nanoTime();
+        List<Song> sorted = Library.mergeSort(library);
+        double seconds = (System.nanoTime() - started) / 1e9;
+        assertEquals(50000, sorted.size(), "Not yet: all 50,000 songs should be in the sorted list.");
+        assertTrue(seconds < 2, "Not yet: sorting 50,000 songs took " + String.format("%.1f", seconds) + " seconds, and the ticket allows 2. A sort that splits and merges makes about 800,000 comparisons here; one that compares song by song makes hundreds of millions.");
+        for (int position = 0; position < sorted.size(); position++) {
+            if (!sorted.get(position).title().equals("Song " + position)) {
+                fail("Not yet: position " + position + " should be Song " + position + ": Artist, then album, then track.");
+            }
+        }
     }
 }

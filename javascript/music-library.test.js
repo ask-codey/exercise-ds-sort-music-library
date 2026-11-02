@@ -78,3 +78,21 @@ test("both sorts agree on a thousand songs", () => {
   assert.equal(byMergeSort[999]?.title, "Song 999", "Not yet: Artist 9's Album 4, track 20, is Song 999, and it comes last.");
   assert.deepEqual(builtInSort(bigLibrary()), byMergeSort, "Not yet: your merge sort and the built-in sort should give the same order.");
 });
+
+test("fifty thousand songs sort in under two seconds", () => {
+  const library = [];
+  for (let i = 0; i < 50000; i++) {
+    const k = (i * 7919) % 50000;
+    library.push({ artist: `Artist ${String(Math.floor(k / 1000)).padStart(3, "0")}`, album: `Album ${String(Math.floor(k / 20) % 50).padStart(2, "0")}`, track: (k % 20) + 1, title: `Song ${k}` });
+  }
+  const started = performance.now();
+  const sorted = mergeSort(library);
+  const seconds = (performance.now() - started) / 1000;
+  assert.equal(sorted.length, 50000, "Not yet: all 50,000 songs should be in the sorted list.");
+  assert.ok(seconds < 2, `Not yet: sorting 50,000 songs took ${seconds.toFixed(1)} seconds, and the ticket allows 2. A sort that splits and merges makes about 800,000 comparisons here; one that compares song by song makes hundreds of millions.`);
+  for (let position = 0; position < sorted.length; position++) {
+    if (sorted[position].title !== `Song ${position}`) {
+      assert.fail(`Not yet: position ${position} should be Song ${position}: Artist, then album, then track.`);
+    }
+  }
+});
